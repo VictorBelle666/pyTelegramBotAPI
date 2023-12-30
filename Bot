@@ -1,0 +1,86 @@
+import telebot
+import webbrowser
+from telebot import types
+
+locale_url = 'https://www.windy.com/43.684/132.113?clouds,43.667,132.106,13,m:eR8ajO4'
+
+
+bot = telebot.TeleBot('6863947953:AAHbAcsGFSdbfVr_DrjnySWRz0HGa8W0D3Q')
+
+
+
+
+
+@bot.message_handler(commands=['site'])
+def site(message):
+    webbrowser.open('http://srv.eop2m2.anc.space/main.php?viewLogs')
+
+@bot.message_handler(commands=['website'])
+def website(message):
+    webbrowser.open('http://srv.eop2m2.anc.space/modules/astro/kvptracks/')
+
+@bot.message_handler(commands=['web'])
+def web(message):
+    webbrowser.open('https://ares.ancprotek.ru/')
+
+@bot.message_handler(commands=['we'])
+def we(message):
+    webbrowser.open('http://srv.eop2m2.anc.space/modules/astro/gplan/')
+
+@bot.message_handler(commands=['start'])
+def hello(message):
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False)
+        keyboard.add(types.KeyboardButton('/документы'))
+        keyboard.add(types.KeyboardButton('/сайты'))
+        bot.send_message(message.chat.id, f'Hello {message.from_user.first_name}', reply_markup=keyboard)
+
+
+
+@bot.message_handler(commands=['сайты'])
+def start(message):
+        markup = types.InlineKeyboardMarkup()
+        btn2 = types.InlineKeyboardButton("Погода (Wyndy)", url="https://www.windy.com/43.684/132.113?clouds,43.667,132.106,13,m:eR8ajO4")
+        btn3 = types.InlineKeyboardButton("Почта АНЦ", url="https://mail.anc.space/?_task=mail&_mbox=INBOX")
+        markup.row(btn2, btn3)
+        file = open('./АНЦ.jpg', 'rb')
+        bot.send_photo(message.chat.id, file, reply_markup=markup)
+
+
+
+@bot.message_handler(content_types=['text'])
+def main_menu(message):
+    if message.text == '/документы':
+        inlineKeyboard = types.InlineKeyboardMarkup()
+        inlineKeyboard.add(types.InlineKeyboardButton('1 - Gplane colors', callback_data='Gplane colors'))
+        inlineKeyboard.add(types.InlineKeyboardButton('2 - Ошибки', callback_data='Ошибки'))
+        inlineKeyboard.add(types.InlineKeyboardButton('3 - Переворот трубы', callback_data='Переворот трубы'))
+        inlineKeyboard.add(types.InlineKeyboardButton('4 - РК ЭОП-2М-2', callback_data='РК ЭОП-2М-2'))
+        inlineKeyboard.add(types.InlineKeyboardButton('5 - Soft Limite', callback_data='Soft Limite'))
+        bot.send_message(message.chat.id, 'Документация. Введите цифру документа, которого хотите скачать', reply_markup=inlineKeyboard)
+
+    if message.text == '1':
+        file = open('гплан цвета.docx', 'rb')
+        bot.send_document(message.chat.id, document=file)
+
+    elif message.text == '5':
+        file1 = open('Soft Limite правлено.docx', 'rb')
+        bot.send_document(message.chat.id, document=file1)
+
+
+    elif message.text == '2':
+        file2 = open('Задания с ошибками правлено.docx', 'rb')
+        bot.send_document(message.chat.id, document=file2)
+
+
+    elif message.text == '3':
+        file3 = open('переворот трубы ОЭК правлено.docx', 'rb')
+        bot.send_document(message.chat.id, document=file3)
+
+
+    elif message.text == '4':
+        file4 = open('Руководство по эксплуатации ФЛРИ.201221.215РЭ (wecompress.com).docx', 'rb')
+        bot.send_document(message.chat.id, document=file4)
+
+bot.polling(none_stop=True, interval=0)
+
+
